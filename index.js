@@ -162,6 +162,47 @@ app.delete("/deleteAlat/:id", isAuthorized, function (req, res) { // membuat end
 
 // CRUD PELANGGAN
 
+app.get('/getAllPelanggan/:id', isAuthorized, (req, res) => {
+  let sql = `
+      SELECT * FROM pelanggan
+      WHERE id = `+req.params.id+`
+      LIMIT 1
+  `
+
+  db.query(sql, (err, result) => {
+      if (err) throw err
+
+      res.json({
+          message: "succes get user's detail",
+          data: result[0]
+      })
+  })
+})
+
+app.put("/editUser/:id", isAuthorized, function (req, res) {
+  let data =
+    'UPDATE pelanggan SET nama="' +
+    req.body.nama +
+    '", email="' +
+    req.body.email +
+    '", password="' +
+    req.body.password +
+    '", no_telepon="' +
+    req.body.no_telepon +
+    '" WHERE id=' +
+    req.params.id;
+  db.query(data, function (err, result) {
+    if (err) throw err;
+ 
+    else {
+      result.json({
+        success: true,
+        message: "Data has been updated"
+      });
+    }
+  });
+});
+
 app.delete('/deletePelanggan/:id', isAuthorized, (req, res) => {
   let sql = `
       delete from pelanggan
