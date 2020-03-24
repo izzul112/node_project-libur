@@ -160,6 +160,24 @@ app.delete("/deleteAlat/:id", isAuthorized, function (req, res) { // membuat end
     });
 });
 
+// CRUD PELANGGAN
+
+app.delete('/deletePelanggan/:id', isAuthorized, (req, res) => {
+  let sql = `
+      delete from pelanggan
+      where id = '`+ req.params.id + `'
+  `
+
+  db.query(sql, (err, result) => {
+      if (err) throw err
+
+      res.json({
+          message: "data has been deleted",
+          data: result
+      })
+  })
+});
+
 app.listen(port, () => {
     console.log('Aplikasi berjalan di ' + port)
 })
