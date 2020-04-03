@@ -110,36 +110,39 @@ const isUser = (request, result, next) => {
 };
 
 app.post('/daftar', (req, res) => {
-  // let email = req.body.email;
+  let email = req.body.email;
 
-  // const sql = "SELECT * FROM pelanggan WHERE email = ?";
-  // if (email){
-  //   db.query(sql, [email], function (err, rows) {
-  //     if (err) throw err;
+  const sql = "SELECT * FROM pelanggan WHERE email = ?";
+  if (email) {
+    db.query(sql, [email], function (err, rows) {
+      if (err) throw err;
 
-  //     else if (rows.length > 0){
-  //       return false;
-  //     }
-  //   })
-  // }
+      else if (rows.length > 0) {
+        res.json({
+          message: "EMAIL TERSEBUT SUDAH DIGUNAKAN"
+        })
+      }
+      else {
+        const data = {
+          nama: req.body.nama,
+          email: req.body.email,
+          password: req.body.password,
+          no_telepon: req.body.no_telepon
+        }
 
-  var data = {
-    nama: req.body.nama,
-    email: req.body.email,
-    password: req.body.password,
-    no_telepon: req.body.no_telepon
+        db.query("INSERT INTO pelanggan SET?", data, function (err, result) {
+          // memasukkan data form ke tabel database
+          if (err) throw err;
+          // jika gagal maka akan keluar error
+          else {
+            res.json({
+              message: "DATA SUKSES DITAMBAH"
+            })
+          }
+        });
+      }
+    })
   }
-
-  db.query("INSERT INTO pelanggan SET?", data, function (err, result) {
-    // memasukkan data form ke tabel database
-    if (err) throw err;
-    // jika gagal maka akan keluar error
-    else {
-      res.json({
-        message: "DATA SUKSES DITAMBAH"
-      })
-    }
-  });
 })
 
 app.post('/login', (req, res) => { //membuat end point untuk login akun
@@ -401,7 +404,7 @@ app.get("/pelanggan/:id/tampilkanTransaksiBerdasarID", isAdmin, (req, res) => {
       if (err) throw err;
 
       res.json({
-        message: "MENAMPILKAN DATA ALAT SEMPROT YANG DISEWA BERDASAR ID",
+        message: "MENAMPILKAN DATA ALAT SEMPROT YANG DISEWA BERDASAR ID Pelanggan",
         data: result
       });
     }
